@@ -15,6 +15,8 @@ repositories {
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-data-redis')
+	compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.9.8'
+
 
 // https://mvnrepository.com/artifact/org.projectlombok/lombok
 	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.6'

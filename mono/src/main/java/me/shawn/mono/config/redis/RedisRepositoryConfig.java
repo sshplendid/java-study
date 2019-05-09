@@ -7,7 +7,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
+
+import java.nio.charset.StandardCharsets;
 
 @Slf4j
 @Configuration
@@ -30,5 +33,23 @@ public class RedisRepositoryConfig {
         redisTemplate.setConnectionFactory(redisConnectionFactory);
 
         return redisTemplate;
+    }
+
+    @Bean
+    public Boolean redisConnectionTest(RedisTemplate<byte[], byte[]> redisTemplate) {
+        ValueOperations<byte[], byte[]> ops = redisTemplate.opsForValue();
+        String key = "Redis";
+        String value = "fast";
+        ops.set(key.getBytes(), value.getBytes());
+
+        byte[] savedValue = ops.get(key.getBytes());
+        String savedValueString = new String(savedValue, StandardCharsets.UTF_8);
+
+        log.info("Redis test: value for '{}' is '{}'.", key, savedValueString);
+
+        if(value.equals(savedValueString)) {
+            redisTemplate.delete(key.getBytes());
+            return true;
+        } else return false;
     }
 }

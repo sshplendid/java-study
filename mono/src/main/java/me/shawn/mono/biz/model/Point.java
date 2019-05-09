@@ -28,4 +28,38 @@ public class Point {
             this.refreshTime = refreshTime;
         }
     }
+
+    public void saveUp(long amount) {
+        this.amount += amount;
+    }
+
+    public void cut(Long point) throws Exception {
+        if(isAmountLesserThan(point)) {
+            throw new Exception("포인트가 부족합니다. 현재 포인트: " + this.amount + ", 삭감포인트: " + point);
+        }
+
+        this.amount -= point;
+    }
+
+    private Boolean isAmountGreaterOrEqualThan(Long compare) {
+        if(this.amount >= compare) {
+            return Boolean.TRUE;
+        }
+        return Boolean.FALSE;
+    }
+
+    private Boolean isAmountLesserThan(Long compare) {
+        return !this.isAmountGreaterOrEqualThan(compare);
+    }
+
+    public boolean validate() {
+        if(isAmountLesserThan(0L)) {
+            return Boolean.FALSE;
+        }
+        return Boolean.TRUE;
+    }
+
+    public boolean hasEnoughPoint(Long comparePoint) {
+        return isAmountGreaterOrEqualThan(comparePoint);
+    }
 }

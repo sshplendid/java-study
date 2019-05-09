@@ -11,4 +11,7 @@ rootProject.name = 'java-study'
 
 include 'mono'
 include 'common-model'
+include 'mq-receiver'
+include 'mq-producer'
+include 'com-utils'
 

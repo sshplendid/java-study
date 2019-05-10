@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 public class Queue1Config {
 
     static final String topicExchangeName = "logs";
-    static final String queueName = "f-mono-queue1";
+    static final String queueName = "fanout-q2";
 
     @Bean
     Queue queue() {

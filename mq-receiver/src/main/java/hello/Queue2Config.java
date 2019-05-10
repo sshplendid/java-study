@@ -7,46 +7,41 @@ import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-@SpringBootApplication
-public class ReceiverApplication {
+@Configuration
+public class Queue2Config {
 
     static final String topicExchangeName = "topic1";
-    static final String queueName = "queue1";
+    static final String queueName = "queue2";
 
     @Bean
-    Queue queue() {
+    Queue queue2() {
         return new Queue(queueName, false);
     }
 
     @Bean
-    TopicExchange exchange() {
+    TopicExchange exchange2() {
         return new TopicExchange(topicExchangeName);
     }
 
     @Bean
-    Binding binding(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with("foo.bar.#");
+    Binding binding2(Queue queue2, TopicExchange exchange2) {
+        return BindingBuilder.bind(queue2).to(exchange2).with("foo.bar.q2");
     }
 
     @Bean
-    SimpleMessageListenerContainer container(ConnectionFactory connectionFactory, MessageListenerAdapter listenerAdapter) {
+    SimpleMessageListenerContainer container2(ConnectionFactory connectionFactory, MessageListenerAdapter listenerAdapter2) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.setQueueNames(queueName);
-        container.setMessageListener(listenerAdapter);
+        container.setMessageListener(listenerAdapter2);
         return container;
     }
 
     @Bean
-    MessageListenerAdapter listenerAdapter(Receiver receiver) {
-        return new MessageListenerAdapter(receiver, "receiveMessage");
-    }
-
-    public static void main(String[] args) {
-        SpringApplication.run(ReceiverApplication.class, args);
+    MessageListenerAdapter listenerAdapter2(IReceiver topicReceiver2) {
+        return new MessageListenerAdapter(topicReceiver2, "receiveMessage");
     }
 }

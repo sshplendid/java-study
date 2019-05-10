@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 @SpringBootApplication
 public class ProducerApplication {
@@ -37,7 +38,9 @@ public class ProducerApplication {
             String message = "this message is for fanout. sent at " + now.toString();
             String fanoutExchangeName = "logs";
             String routingKey = "abc";
-            template.convertAndSend(fanoutExchangeName, routingKey, message);
+            for(int i = 1; i <= 1000000; i++) {
+                template.convertAndSend(fanoutExchangeName, routingKey, i + " " + message);
+            }
             System.out.println(message);
         };
     }

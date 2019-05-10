@@ -8,6 +8,6 @@ import org.springframework.stereotype.Component;
 public class Queue1Receiver {
 
     public void receiveMessage(String message) {
-        log.info("Received <{}>.", message);
+        log.info("[Fanout Queue] A message received <{}>.", message);
     }
 }

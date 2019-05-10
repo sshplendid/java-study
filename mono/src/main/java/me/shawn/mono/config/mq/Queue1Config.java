@@ -1,9 +1,6 @@
 package me.shawn.mono.config.mq;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
@@ -13,8 +10,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class Queue1Config {
 
-    static final String topicExchangeName = "topic1";
-    static final String queueName = "queue1";
+    static final String topicExchangeName = "logs";
+    static final String queueName = "f-mono-queue1";
 
     @Bean
     Queue queue() {
@@ -22,13 +19,13 @@ public class Queue1Config {
     }
 
     @Bean
-    TopicExchange exchange() {
-        return new TopicExchange(topicExchangeName);
+    FanoutExchange exchange() {
+        return new FanoutExchange(topicExchangeName);
     }
 
     @Bean
-    Binding binding(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with("foo.bar.#");
+    Binding binding(Queue queue, FanoutExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange);
     }
 
     @Bean

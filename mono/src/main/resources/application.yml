@@ -7,8 +7,10 @@ server:
       name: SSHSESSIONID
 
 spring:
-#  profiles:
-#    active: local
+  profiles:
+    active:
+      - kafka
+      - local
   redis:
     host: localhost
     port: 6379

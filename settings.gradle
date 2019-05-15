@@ -14,4 +14,6 @@ include 'common-model'
 include 'mq-receiver'
 include 'mq-producer'
 include 'com-utils'
+//include 'ddb-client'
+include 'kafka-sample'
 

@@ -16,4 +16,4 @@ include 'mq-producer'
 include 'com-utils'
 //include 'ddb-client'
 include 'kafka-sample'
-
+include 'simple-web-server'

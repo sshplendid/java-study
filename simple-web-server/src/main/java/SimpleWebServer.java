@@ -1,6 +1,5 @@
 import request.Request;
 import response.Response;
-import response.Response.Response;
 
 import javax.annotation.PreDestroy;
 import java.io.*;
@@ -19,7 +18,8 @@ public class SimpleWebServer {
         server.open();
     }
     public SimpleWebServer(int port) throws IOException {
-        resourcePath = "C:\\dev\\sample";
+//        resourcePath = "C:\\dev\\sample";
+        resourcePath = "/Users/sshplendid/IdeaProjects/java-study/simple-web-server/src/test/resources/sample";
         this.loadResources(resourcePath);
         serverSocket = new ServerSocket(port);
         System.out.println("Server is running...");
@@ -29,43 +29,49 @@ public class SimpleWebServer {
         while(true) {
             System.out.print("waiting... since " + LocalDateTime.now());
             Socket socket = serverSocket.accept();
+            DataOutputStream dos = null;
+            DataInputStream dis = null;
             if(socket.isConnected()) {
-                System.out.println(String.format(": connected from %s:%s", socket.getInetAddress(), socket.getPort()));
-                DataInputStream dis = new DataInputStream(socket.getInputStream());
-                System.out.println(".");
-                int inputSize = dis.available();
-                byte[] inputBytes = new byte[inputSize];
-                dis.read(inputBytes);
-                StringBuilder str = new StringBuilder();
-                for(byte b : inputBytes) {
-                    str.append(String.valueOf((char)b));
+                try {
+                    System.out.println(String.format(": connected from %s:%s", socket.getInetAddress(), socket.getPort()));
+                    dis = new DataInputStream(socket.getInputStream());
+                    StringBuilder str = new StringBuilder();
+                    byte b = 0;
+                    while((b = (byte) dis.read()) != -1) {
+                        str.append(String.valueOf((char) b));
+                    }
+                    System.out.println("== request:start ==");
+                    System.out.println(str.toString());
+                    System.out.println("== request:end ==");
+                    Request req = Request.of(str.toString());
+                    dos = new DataOutputStream(socket.getOutputStream());
+                    if (this.resources.containsKey(req.getUri())) {
+                        dos.write(route(req).toString().getBytes());
+                        System.out.println("RESPONSE: OK");
+                    } else {
+                        dos.write(Response.notFound().toString().getBytes());
+                        System.out.println("RESPONSE: NOT FOUND");
+                    }
+                } catch(Exception e) {
+                    System.out.println("RESPONSE: Server Error: " + e.getMessage());
+                    e.printStackTrace();
+                    dos = new DataOutputStream(socket.getOutputStream());
+                    dos.write(Response.internalServerError().toString().getBytes());
+                } finally {
+                    if(dis != null) {
+                        dis.close();
+                        dis = null;
+                    }
+                    if(dos != null) {
+                        dos.flush();
+                        dos.close();
+                        dos = null;
+                    }
                 }
-                System.out.println("== request ==");
-                System.out.println(str);
-                if (str.toString().contains("HTTP")) {
-                    DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-                    dos.write(getDefaultResponseMessage().getBytes());
-                    dos.flush();
-                    dos.close();
-                }
-                dis.close();
             }
             if (!socket.isClosed())
                 socket.close();
         }
-    }
-
-    private String getDefaultResponseMessage() {
-        String body =  "<html><body><h1>Simple Web Server!</h1></body></html>";
-        String response = "HTTP/1.1 200 OK\r\n"
-                + "Server: SimpleWebServer\r\n"
-                + "Content-Type: text/html;charset=utf-8\r\n"
-                + "Content-Length: "+body.getBytes().length+"\r\n"
-                + "\r\n"
-                + body
-                + "\r\n";
-
-        return response;
     }
 
     private void loadResources(String resourcePath) throws FileNotFoundException {
@@ -87,6 +93,13 @@ public class SimpleWebServer {
             String result = br.lines().reduce((a, b) -> a + "\n" + b).get();
             resources.put(getResourcePathKey(root.getPath()), result);
             System.out.println("File: " + getResourcePathKey(root.getPath()));
+            try {
+                if(br != null) {
+                    br.close();
+                }
+            } catch (Exception e) {
+                br = null;
+            }
         } else if(root.isDirectory()){
             for(File f: root.listFiles()) {
                 readFile(f);
@@ -103,6 +116,7 @@ public class SimpleWebServer {
     }
 
     private Response route(Request request) {
+        System.out.println("Resource exists");
         String uri = request.getUri();
         if(this.resources.containsKey(uri)) {
             return Response.ok(this.resources.get(uri));

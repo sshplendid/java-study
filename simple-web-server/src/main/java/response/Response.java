@@ -35,6 +35,15 @@ public class Response {
         return response;
     }
 
+    public static Response internalServerError() {
+        Response response = new Response();
+
+        response.status = ResponseCode.INTERNAL_SERVER_ERROR;
+        response.header = getDefaultHeaders(0);
+
+        return response;
+    }
+
 
     @Override
     public String toString() {
@@ -43,6 +52,7 @@ public class Response {
         sb.append(this.header.toString());
         sb.append("\r\n");
         sb.append(this.responseBody);
-        return super.toString();
+        sb.append("\r\n\r\n");
+        return sb.toString();
     }
 }

@@ -18,3 +18,5 @@ include 'com-utils'
 include 'kafka-sample'
 include 'simple-web-server'
 include 'spring-h2-example'
+include 'aws-example'
+

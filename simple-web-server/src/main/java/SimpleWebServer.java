@@ -27,26 +27,26 @@ public class SimpleWebServer {
 
     public void open() throws IOException {
         while(true) {
-            System.out.print("waiting... since " + LocalDateTime.now());
+            System.out.println("waiting... since " + LocalDateTime.now());
             Socket socket = serverSocket.accept();
             DataOutputStream dos = null;
             DataInputStream dis = null;
             if(socket.isConnected()) {
                 try {
-                    System.out.println(String.format(": connected from %s:%s", socket.getInetAddress(), socket.getPort()));
+                    System.out.println(String.format("  connected from %s:%s", socket.getInetAddress(), socket.getPort()));
                     dis = new DataInputStream(socket.getInputStream());
                     StringBuilder str = new StringBuilder();
-                    byte b = 0;
-                    while((b = (byte) dis.read()) != -1) {
+                    int b = 0;
+                    while((b = dis.read()) != -1) {
                         str.append(String.valueOf((char) b));
                     }
                     System.out.println("== request:start ==");
                     System.out.println(str.toString());
                     System.out.println("== request:end ==");
-                    Request req = Request.of(str.toString());
+                    Request request = Request.of(str.toString());
                     dos = new DataOutputStream(socket.getOutputStream());
-                    if (this.resources.containsKey(req.getUri())) {
-                        dos.write(route(req).toString().getBytes());
+                    if (this.resources.containsKey(request.getUri())) {
+                        dos.write(route(request).toString().getBytes());
                         System.out.println("RESPONSE: OK");
                     } else {
                         dos.write(Response.notFound().toString().getBytes());

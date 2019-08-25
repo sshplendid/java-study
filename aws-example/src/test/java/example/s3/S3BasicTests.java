@@ -1,5 +1,6 @@
 package example.s3;
 
+import com.amazonaws.HttpMethod;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
@@ -11,6 +12,7 @@ import org.junit.Test;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -109,9 +111,11 @@ public class S3BasicTests {
         String key = "presigned-upload.txt";
 
         GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(BUCKET_NAME, key)
+                .withMethod(HttpMethod.PUT)
                 .withExpiration(new Date(System.currentTimeMillis() + expirationTime));
 
         URL url = s3Client.generatePresignedUrl(request);
+        System.out.println("PreSignedURL: " + url);
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setDoOutput(true);
@@ -121,5 +125,36 @@ public class S3BasicTests {
         }
 
         System.out.println("업로드 결과: " + connection.getResponseCode());
+    }
+
+    @Test
+    public void generatePreSignedUrlAndPutS3SelectJson() throws IOException {
+        String sqlJson = "[{\n" +
+                "    \"Rules\": [\n" +
+                "        {\"id\": \"id-1\", \"condition\": \"x < 20\"},\n" +
+                "        {\"condition\": \"y > x\"},\n" +
+                "        {\"id\": \"id-2\", \"condition\": \"z = DEBUG\"}\n" +
+                "    ]\n" +
+                "},\n" +
+                "{\n" +
+                "    \"created\": \"June 27\",\n" +
+                "    \"modified\": \"July 6\"\n" +
+                "}]";
+        String objectKey = "s3-sql.json";
+
+        GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(BUCKET_NAME, objectKey)
+                .withMethod(HttpMethod.PUT)
+                .withExpiration(Date.from(Instant.now().plusSeconds(60)));
+
+        URL preSignedUrl = s3Client.generatePresignedUrl(request);
+        HttpURLConnection connection = (HttpURLConnection) preSignedUrl.openConnection();
+        connection.setDoOutput(true);
+        connection.setRequestMethod("PUT");
+        try (OutputStreamWriter writer  = new OutputStreamWriter(connection.getOutputStream())) {
+            writer.write(sqlJson);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("S3 PutObject Result: " + connection.getResponseCode());
     }
 }

@@ -18,8 +18,8 @@ import java.util.Date;
 
 public class S3BasicTests {
     private AmazonS3 s3Client;
-    private final String BUCKET_NAME = "shawn-log";
-    private final String PROFILE_NAME = "upload";
+    private final String BUCKET_NAME = "bocommon-sample";
+    private final String PROFILE_NAME = "dev";
     private final String PATH = System.getProperty("java.io.tmpdir");
     private final String FILE_NAME = "/hello-" + LocalDateTime.now() + ".txt";
 

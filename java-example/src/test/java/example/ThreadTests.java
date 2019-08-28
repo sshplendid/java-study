@@ -28,6 +28,19 @@ public class ThreadTests {
     }
 
     @Test
+    public void wrongTwoPizzasTest2() {
+        log.info("hungry");
+        Thread order1 = new Thread(() -> domino.order("페페로니"));
+        Thread order2 = new Thread(() -> domino.order("하와이안"));
+        Thread deliver = new Thread(() -> domino.deliver("신천동"));
+        order1.start();
+        order2.start();
+        deliver.start();
+
+        log.info("Done...?");
+    }
+
+    @Test
     public void classicPizzaTest() throws InterruptedException {
         Thread order1 = new Thread(() -> domino.order("슈프림"));
 

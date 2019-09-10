@@ -1,6 +1,9 @@
 package concurrent;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import java.util.concurrent.BlockingQueue;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 public class Consumer implements Runnable {
@@ -9,8 +12,10 @@ public class Consumer implements Runnable {
     private final BlockingQueue<QueueMessage> queue;
     private MockClient client;
     private Boolean progress;
+    private Supplier<Boolean> supplier;
 
-    public Consumer(BlockingQueue<QueueMessage> queue) {
+    public Consumer(BlockingQueue<QueueMessage> queue, Supplier<Boolean> supplier) {
+        this.supplier = supplier;
         this.queue = queue;
         this.client = new MockClient();
         progress = true;
@@ -19,21 +24,21 @@ public class Consumer implements Runnable {
     @Override
     public void run() {
         try {
-            log.info("["+Thread.currentThread().getName() + "-" + Thread.currentThread().getId()+"]Consumer job start.");
-            while(progress) {
+            log.info("["+Thread.currentThread().getName() + ":" + Thread.currentThread().getId()+"]Consumer job start.");
+            while(supplier.get()) {
                 if(queue.isEmpty()) {
-                    progress = false;
-                    log.info("["+Thread.currentThread().getName() + "-" + Thread.currentThread().getId()+"]Queue is empty!");
-                    return;
+                    log.info("["+Thread.currentThread().getName() + ":" + Thread.currentThread().getId()+"]Queue is empty!");
+                } else {
+                    QueueMessage message = queue.take();
+                    client.consume(message);
                 }
-                QueueMessage message = queue.take();
-                client.consume(message);
             }
-            log.info("["+Thread.currentThread().getName() + "-" + Thread.currentThread().getId()+"]Consumer job end.");
+            log.info("["+Thread.currentThread().getName() + ":" + Thread.currentThread().getId()+"]Consumer job end.");
 
         } catch (InterruptedException e) {
-            log.info("["+Thread.currentThread().getName() + "-" + Thread.currentThread().getId()+"]Consumer error.");
+            log.info("["+Thread.currentThread().getName() + ":" + Thread.currentThread().getId()+"]Consumer error.");
             log.info(e.getMessage());
         }
     }
+
 }

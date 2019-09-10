@@ -27,4 +27,9 @@ public class Producer implements Runnable {
             }
         });
     }
+
+    public boolean isAlive() {
+        System.out.println(Thread.currentThread().getName()+":"+Thread.currentThread().getId());
+        return !Thread.currentThread().isAlive();
+    }
 }

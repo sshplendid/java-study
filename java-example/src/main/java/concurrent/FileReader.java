@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class FileReader {
-    private final String fileName = "test.txt";
+    private final String fileName = System.getProperty("user.dir") + "/java-example/test.txt";
 
     public List<QueueMessage> readFile() {
         try (BufferedReader br = new BufferedReader(new java.io.FileReader(fileName))) {

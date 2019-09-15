@@ -1,14 +1,14 @@
 package concurrent;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.function.Supplier;
-import java.util.logging.Logger;
 
 public class Consumer implements Runnable {
 
-    private static final Logger log = Logger.getAnonymousLogger();
+    private static final Logger log = LoggerFactory.getLogger(Consumer.class);
     private final BlockingQueue<QueueMessage> queue;
     private MockClient client;
     private Boolean progress;

@@ -1,12 +1,14 @@
 package concurrent;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
-import java.util.logging.Logger;
 
 public class Producer implements Runnable {
 
-    private final Logger log = Logger.getAnonymousLogger();
+    private final Logger log = LoggerFactory.getLogger(Producer.class);
     private final BlockingQueue<QueueMessage> queue;
     private final FileReader fileReader;
 
@@ -17,6 +19,7 @@ public class Producer implements Runnable {
 
     @Override
     public void run() {
+        log.info(Thread.currentThread().getName() + Thread.currentThread().getId() + " Producer job started.");
         List<QueueMessage> messageList = fileReader.readFile();
         messageList.forEach(message -> {
             try {
@@ -26,10 +29,6 @@ public class Producer implements Runnable {
                 e.printStackTrace();
             }
         });
-    }
-
-    public boolean isAlive() {
-        System.out.println(Thread.currentThread().getName()+":"+Thread.currentThread().getId());
-        return !Thread.currentThread().isAlive();
+        log.info(Thread.currentThread().getName() + Thread.currentThread().getId() + " Producer job finished.");
     }
 }

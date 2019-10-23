@@ -19,4 +19,5 @@ include 'simple-web-server'
 include 'spring-h2-example'
 include 'aws-example'
 include 'java-example'
+include 'spring-web-starter'
 

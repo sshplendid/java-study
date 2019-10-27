@@ -26,7 +26,7 @@ public class ThreadPoolApp {
         ThreadPoolExecutor executor = (ThreadPoolExecutor) service;
         producer.join();
         producer.start();
-        for(int i = 0; i < THREAD_POOL_CAPACITY; i++) {
+        for (int i = 0; i < THREAD_POOL_CAPACITY; i++) {
             executor.execute(new Consumer(app.getQueue(), () -> producer.isAlive()));
         }
         executor.shutdown();

@@ -27,6 +27,7 @@ public class BlockingQueueTest {
             queue.add(n);
         });
     }
+
     @Test(expected = NoSuchElementException.class)
     public void remove_throwException() {
         IntStream.range(0, CAPACITY).forEach(n -> {

@@ -9,7 +9,7 @@ public class ParallelStreamTests {
     @Test
     public void test1() {
         IntStream.range(0, 10).parallel().forEach(n -> {
-            System.out.println(Thread.currentThread().getName() + "->"+Thread.currentThread().getId() + ": "+ new Date());
+            System.out.println(Thread.currentThread().getName() + "->" + Thread.currentThread().getId() + ": " + new Date());
         });
     }
 
@@ -19,7 +19,8 @@ public class ParallelStreamTests {
             System.out.println("Starting " + Thread.currentThread().getName() + ",    index=" + index + ", " + new Date());
             try {
                 Thread.sleep(5000);
-            } catch (InterruptedException e) { }
+            } catch (InterruptedException e) {
+            }
         });
     }
 }

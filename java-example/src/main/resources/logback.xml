@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <property name="LOGS_ABSOLUTE_PATH" value="./logs" />
+    <property name="LOGS_ABSOLUTE_PATH" value="./logs"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
@@ -29,13 +29,13 @@
     </appender>
 
     <logger name="com.apress.spring" level="DEBUG">
-        <appender-ref ref="SAMPLE" />
+        <appender-ref ref="SAMPLE"/>
     </logger>
     <logger name="com.apress.spring.jeongpro" level="INFO">
-        <appender-ref ref="ROLLING" />
+        <appender-ref ref="ROLLING"/>
     </logger>
     <root level="INFO">
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="STDOUT"/>
     </root>
 </configuration>
 

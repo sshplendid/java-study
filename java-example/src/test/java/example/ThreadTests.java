@@ -63,7 +63,7 @@ public class ThreadTests {
         executor.execute(order1);
         executor.execute(order2);
 
-        while(!order1.isDone() || !order2.isDone()) {
+        while (!order1.isDone() || !order2.isDone()) {
             Thread.sleep(1000);
             log.info("tv를 보며 기다린다.");
         }
@@ -77,12 +77,13 @@ public class ThreadTests {
                 CompletableFuture.supplyAsync(() -> domino.order("페페로니")),
                 CompletableFuture.supplyAsync(() -> domino.order("슈프림")))
                 .thenRunAsync(() -> domino.deliver("신천동"))
-        .whenComplete((aVoid, throwable) -> log.info("냠냠"));
-        while(!pizza.isDone()) {
+                .whenComplete((aVoid, throwable) -> log.info("냠냠"));
+        while (!pizza.isDone()) {
             log.info("Waiting...");
             Thread.sleep(1000);
         }
     }
+
     @Test
     public void test() {
         LocalDateTime.now().toInstant(ZoneOffset.UTC).toEpochMilli();

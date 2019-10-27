@@ -21,15 +21,14 @@ public class AsyncTests {
     public void async1() throws ExecutionException, InterruptedException {
         System.out.println("==test1");
         CompletableFuture<Void> a =
-        CompletableFuture.runAsync(echoAfter5Seconds)
-                .thenCompose(aVoid -> CompletableFuture.runAsync(echoAfter5Seconds))
-                .thenAcceptAsync(aVoid -> System.out.println("Accept"))
-        .exceptionally(e -> {
-            System.out.println("Exception: ");
-            System.out.println(e.getMessage());
-            return null;
-        })
-        ;
+                CompletableFuture.runAsync(echoAfter5Seconds)
+                        .thenCompose(aVoid -> CompletableFuture.runAsync(echoAfter5Seconds))
+                        .thenAcceptAsync(aVoid -> System.out.println("Accept"))
+                        .exceptionally(e -> {
+                            System.out.println("Exception: ");
+                            System.out.println(e.getMessage());
+                            return null;
+                        });
         a.whenComplete((aVoid, throwable) -> System.out.println("completed."));
         a.get();
         System.out.println("<=test1");

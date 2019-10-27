@@ -24,19 +24,19 @@ public class Consumer implements Runnable {
     @Override
     public void run() {
         try {
-            log.info("["+Thread.currentThread().getName() + ":" + Thread.currentThread().getId()+"]Consumer job start.");
-            while(supplier.get()) {
-                if(queue.isEmpty()) {
-                    log.info("["+Thread.currentThread().getName() + ":" + Thread.currentThread().getId()+"]Queue is empty!");
+            log.info("[" + Thread.currentThread().getName() + ":" + Thread.currentThread().getId() + "]Consumer job start.");
+            while (supplier.get()) {
+                if (queue.isEmpty()) {
+                    log.info("[" + Thread.currentThread().getName() + ":" + Thread.currentThread().getId() + "]Queue is empty!");
                 } else {
                     QueueMessage message = queue.take();
                     client.consume(message);
                 }
             }
-            log.info("["+Thread.currentThread().getName() + ":" + Thread.currentThread().getId()+"]Consumer job end.");
+            log.info("[" + Thread.currentThread().getName() + ":" + Thread.currentThread().getId() + "]Consumer job end.");
 
         } catch (InterruptedException e) {
-            log.info("["+Thread.currentThread().getName() + ":" + Thread.currentThread().getId()+"]Consumer error.");
+            log.info("[" + Thread.currentThread().getName() + ":" + Thread.currentThread().getId() + "]Consumer error.");
             log.info(e.getMessage());
         }
     }
